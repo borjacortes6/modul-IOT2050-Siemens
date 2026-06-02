@@ -75,42 +75,49 @@ Descarga el manual completo aquí:
 
 ## ⚡ 1.3 Cableado de una entrada digital
 
-### 1.3.1 Esquema de conexión
+### 1.3.1 Esquema de conexión (lógica invertida: 0 = reposo, 1 = activo)
 
-Las DI del shield 6ES7647-0KA01-0AA2 son **entradas de 24V** (lógica positiva). La forma más sencilla de probarlas es conectar un **pulsador / interruptor** entre la DI y M0:
+Por defecto, las DI del shield leen **1** cuando no hay nada conectado (estado flotante). Para invertir la lógica y que en reposo lean **0**, hay que:
+
+1. Conectar una **resistencia de pull-down de 10kΩ** entre la DI y M0 (GND)
+2. Conectar el **pulsador entre la DI y L+ (+24V)**
 
 ```
             ┌───────────────────────────────────┐
             │         IoT2050 + Shield           │
             │                                   │
- [X11-2] ───┤ DI0                               │
+ [X12-7] ───┤ L+ (+24V)                         │
             │                                   │
- [X11-1] ───┤ M0 (GND)                          │
+ [X11-2] ───┤ DI0                               │
+            │            ┌─┴─┐                   │
+            │            │   │  ← Pulsador NA    │
+            │            └─┬─┘                   │
+            │              │                     │
+            │          ┌───┴───┐                 │
+            │          │ 10kΩ  │  ← Pull-down    │
+            │          └───┬───┘                 │
+ [X11-1] ───┤ M0 (GND) ───┘                     │
             └───────────────────────────────────┘
-                    │
-                  ┌─┴─┐
-                  │   │  ← Pulsador NA (normalmente abierto)
-                  └─┬─┘
-                    │
-                   GND
 ```
 
 **Funcionamiento:**
-- **Pulsador NO pulsado** → DI0 no conectada a M0 → la entrada **flota** o lee el pull-up interno → **1** (HIGH)
-- **Pulsador SÍ pulsado** → DI0 conectada a M0 (GND) → **0** (LOW)
+- **Pulsador NO pulsado** → la resistencia de pull-down conecta DI0 a M0 (GND) → **0** (LOW) ✅
+- **Pulsador SÍ pulsado** → DI0 conectada a L+ (+24V) → **1** (HIGH) ✅
 
-> 💡 **Nota sobre pull-up:** El shield dispone de resistencias de pull-up configurables a través del PCAL9535 en la dirección I2C 0x25, pero por defecto las entradas ya tienden a leer **1** cuando no hay nada conectado. Si al dejar el pulsador sin pulsar la lectura es inestable, se puede conectar una resistencia externa de 10kΩ entre DI y L+ (X12-7, +24V) para forzar el estado HIGH.
+> ⚠️ La resistencia de **10kΩ** es necesaria para que cuando el pulsador está abierto, la DI no quede flotante sino que se mantenga a 0V (GND). Sin el pull-down, el valor sería impredecible.
 
 ### 1.3.2 Ejemplo práctico con pulsador
 
 ```
-X11-2 (DI0) ──── Pulsador NA ──── X11-1 (M0)
+X12-7 (L+, +24V) ──── Pulsador NA ──── DI0 (X11-2)
+
+X11-2 (DI0) ──── R 10kΩ ──── X11-1 (M0, GND)
 ```
 
-Cuando pulses el pulsador, DI0 se conecta a Masa → lee **0**.
-Cuando sueltes el pulsador, DI0 se queda al aire (o con pull-up) → lee **1**.
+Cuando **pulsas** el pulsador, DI0 se conecta a +24V → lee **1** ✅
+Cuando **dejas de pulsar**, el pull-down la mantiene a 0V → lee **0** ✅
 
-> ⚠️ Si quieres usar más de una DI, conecta cada pulsador entre la DI correspondiente y **el mismo borne M0** (X11-1). M0 es la masa común para todas las entradas.
+> ⚠️ Si quieres usar más de una DI, conecta cada pulsador entre L+ y la DI correspondiente, y pon una resistencia de pull-down de 10kΩ entre cada DI y M0.
 
 ---
 
@@ -268,16 +275,17 @@ Para salir del bucle pulsa `Ctrl + C`.
 
 ### 2.3.6 Confirmación experimental
 
-Una vez los GPIOs estén exportados, probad las entradas:
+Una vez los GPIOs estén exportados, probad las entradas con el cableado invertido (pull-down + pulsador a L+):
 
 ```bash
-# Con el pulsador instalado en DI0 (X11-2) y M0 (X11-1):
+# Con el pulsador instalado en DI0 (X11-2), pull-down 10kΩ a M0,
+# y pulsador entre DI0 y L+ (X12-7):
 
 # Sin pulsar:
-cat /sys/class/gpio/gpio437/value   # → 1 (HIGH) ✅
+cat /sys/class/gpio/gpio437/value   # → 0 (LOW) ✅  ← ahora 0 en reposo!
 
 # Pulsando:
-cat /sys/class/gpio/gpio437/value   # → 0 (LOW) ✅
+cat /sys/class/gpio/gpio437/value   # → 1 (HIGH) ✅ ← ahora 1 al pulsar!
 ```
 
 Podéis repetir la prueba conectando el pulsador a otras DI (DI1-DI4).
@@ -348,24 +356,26 @@ Cada DI muestra **1** (no pulsado / HIGH) o **0** (pulsado / LOW) en tiempo real
 echo 437 > /sys/class/gpio/export   # DI0
 echo 345 > /sys/class/gpio/export   # DI4
 
-# 2. Leer (sin conectar nada)
-cat /sys/class/gpio/gpio437/value   # → 1
+# 2. Leer (sin conectar nada todavía)
+cat /sys/class/gpio/gpio437/value   # → puede dar 0 o 1 (flotante)
 
-# 3. Conecta un pulsador entre DI0 (X11-2) y M0 (X11-1)
+# 3. Conecta:
+#    - Resistencia 10kΩ entre DI0 (X11-2) y M0 (X11-1) → pull-down
+#    - Pulsador NA entre X12-7 (L+, +24V) y DI0 (X11-2)
 
 # 4. Leer sin pulsar
-cat /sys/class/gpio/gpio437/value   # → 1
+cat /sys/class/gpio/gpio437/value   # → 0 (pull-down a GND) ✅
 
 # 5. Leer pulsando (mantén el pulsador apretado)
-cat /sys/class/gpio/gpio437/value   # → 0 ✨
+cat /sys/class/gpio/gpio437/value   # → 1 (+24V) ✅ ✨
 ```
 
 ### Desde Node-RED:
 
-1. Obre **http://192.168.200.1:1880/ui/**
+1. Abre **http://192.168.200.1:1880/ui/**
 2. Pulsa el pulsador y observa cómo cambia el indicador en el dashboard
 
-> ⚠️ **Si no funciona:** Comprueba que has exportado el GPIO (`echo 437 > /sys/class/gpio/export`), que el pulsador está bien conectado entre DI y M0, y que el cableado llega hasta el borne correcto del X11.
+> ⚠️ **Si no funciona:** Comprueba que has exportado el GPIO (`echo 437 > /sys/class/gpio/export`), que el pulsador está entre DI y L+ (X12-7), que el pull-down de 10kΩ está entre DI y M0 (X11-1), y que el cableado llega hasta los bornes correctos.
 
 ---
 
@@ -373,7 +383,7 @@ cat /sys/class/gpio/gpio437/value   # → 0 ✨
 
 | Paso | Qué hacemos | Comandos clave |
 |------|------------|----------------|
-| 1 | Cablear | Pulsador NA entre DI (X11-2..6) y M0 (X11-1) |
+| 1 | Cablear | Pull-down 10kΩ DI→M0 (GND). Pulsador NA DI→L+ (+24V) |
 | 2 | Acceder | PuTTY → 192.168.200.1 → root / 123456 |
 | 3 | Descubrir | `gpiodetect`, `gpioinfo gpiochip3/4` |
 | 4 | Exportar | `echo 437 > /sys/class/gpio/export` (y 438, 439, 441, 345) |
