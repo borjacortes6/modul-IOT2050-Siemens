@@ -75,7 +75,11 @@ Descarrega el manual complet aquí:
 
 ## ⚡ 1.3 Cablejat d'una entrada digital
 
-### 1.3.1 Esquema de connexió (lògica invertida: 0 = repòs, 1 = actiu)
+### 1.3.1 Connexió de les entrades digitals DI (Pàg. 21 del manual)
+
+![Entrades digitals](../practica-1/images/wiring-digital-inputs.png)
+
+*Pàg 21: connexió dels sensors / interruptors a les entrades DI0-DI4 (connector X11)*
 
 Per defecte, les DI del shield llegeixen **1** quan no hi ha res connectat (estat flotant). Per invertir la lògica i que en repòs llegeixin **0**, cal:
 
@@ -95,10 +99,10 @@ Per defecte, les DI del shield llegeixen **1** quan no hi ha res connectat (esta
 ```
 
 **Funcionament:**
-- **Polsador NO polsat** → la resistència de pull-down porta DI0 a **0V (GND)** → llegeix **0** ✅
-- **Polsador SÍ polsat** → DI0 connectada a **+24V (L+)** → llegeix **1** ✅
+- **Polsador NO polsat** → pull-down a GND → DI0 = **0** (repòs)
+- **Polsador SÍ polsat** → +24V a DI0 → DI0 = **1** (actiu)
 
-> ⚠️ La resistència de **10kΩ** és necessària perquè quan el polsador està obert, la DI no quedi flotant sinó que es mantingui fermament a 0V (GND). Sense el pull-down, el valor seria impredictible.
+> ⚠️ La resistència de **10kΩ** és necessària perquè quan el polsador està obert, la DI no quedi flotant sinó que es mantingui fermament a 0V (GND).
 
 ### 1.3.2 Exemple pràctic amb polsador
 

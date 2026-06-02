@@ -75,7 +75,11 @@ Descarga el manual completo aquí:
 
 ## ⚡ 1.3 Cableado de una entrada digital
 
-### 1.3.1 Esquema de conexión (lógica invertida: 0 = reposo, 1 = activo)
+### 1.3.1 Conexión de las entradas digitales DI (Pág. 21 del manual)
+
+![Entradas digitales](../practica-1/images/wiring-digital-inputs.png)
+
+*Pág 21: conexión de sensores / interruptores a las entradas DI0-DI4 (conector X11)*
 
 Por defecto, las DI del shield leen **1** cuando no hay nada conectado (estado flotante). Para invertir la lógica y que en reposo lean **0**, hay que:
 
@@ -95,10 +99,10 @@ Por defecto, las DI del shield leen **1** cuando no hay nada conectado (estado f
 ```
 
 **Funcionamiento:**
-- **Pulsador NO pulsado** → la resistencia de pull-down lleva DI0 a **0V (GND)** → lee **0** ✅
-- **Pulsador SÍ pulsado** → DI0 conectada a **+24V (L+)** → lee **1** ✅
+- **Pulsador NO pulsado** → pull-down a GND → DI0 = **0** (reposo)
+- **Pulsador SÍ pulsado** → +24V a DI0 → DI0 = **1** (activo)
 
-> ⚠️ La resistencia de **10kΩ** es necesaria para que cuando el pulsador está abierto, la DI no quede flotante sino que se mantenga firmemente a 0V (GND). Sin el pull-down, el valor sería impredecible.
+> ⚠️ La resistencia de **10kΩ** es necesaria para que cuando el pulsador está abierto, la DI no quede flotante sino que se mantenga firmemente a 0V (GND).
 
 ### 1.3.2 Ejemplo práctico con pulsador
 
