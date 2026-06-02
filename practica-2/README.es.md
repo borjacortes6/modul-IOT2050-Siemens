@@ -82,27 +82,23 @@ Descarga el manual completo aquí:
 Para leer las entradas digitales, necesitamos una **fuente de alimentación externa de 24V DC** independiente del shield. Las conexiones son:
 
 1. **+24V externo** → Pulsador NA → **DI0** (X11-2)
-2. **DI0** (X11-2) → resistencia **10kΩ** (pull-down) → **M0** (X11-1, GND)
-3. **GND externo** → **M0** (X11-1, GND)
+2. **GND externo** → **M0** (X11-1, GND)
 
 **Funcionamiento:**
-- **Pulsador NO pulsado** → pull-down de 10kΩ a GND → DI0 = **0** (reposo)
+- **Pulsador NO pulsado** → DI0 abierta → DI0 = **0** (reposo)
 - **Pulsador SÍ pulsado** → +24V a DI0 → DI0 = **1** (activo)
-
-> ⚠️ La resistencia de **10kΩ** es necesaria para que cuando el pulsador está abierto, la DI no quede flotante sino que se mantenga firmemente a 0V (GND).
 
 ### 1.3.2 Ejemplo práctico con pulsador
 
 **Conexiones:**
 - **+24V externo** → Pulsador NA → **DI0** (X11-2)
-- **DI0** (X11-2) → **R 10kΩ** (pull-down) → **M0** (X11-1, GND)
 - **GND externo** → **M0** (X11-1, GND)
 
 **Lógica:**
-- **Sin pulsar** → pull-down a GND → DI0 = **0** (reposo)
+- **Sin pulsar** → DI0 = **0** (reposo)
 - **Pulsando** → +24V a DI0 → DI0 = **1** (activo)
 
-> ⚠️ Para usar más de una DI: cada pulsador entre +24V y la DI, con su pull-down de 10kΩ a M0.
+> ⚠️ Para usar más de una DI: cada pulsador entre +24V y la DI correspondiente, y todas las DI con M0 común a GND.
 
 ---
 
@@ -231,10 +227,8 @@ cat /sys/class/gpio/gpio437/value   # DI0: 0 o 1
 Prueba a pulsar el pulsador mientras lees:
 
 ```bash
-# Con el cableado invertido (pull-down 10kΩ + pulsador a +24V):
-
 # Suelta el pulsador y lee:
-cat /sys/class/gpio/gpio437/value   # DI0 → debe dar 0 (pull-down a GND) ✅
+cat /sys/class/gpio/gpio437/value   # DI0 → debe dar 0 ✅
 
 # Mantén pulsado el pulsador y lee:
 cat /sys/class/gpio/gpio437/value   # DI0 → debe dar 1 (+24V) ✅
@@ -346,12 +340,11 @@ echo 345 > /sys/class/gpio/export   # DI4
 cat /sys/class/gpio/gpio437/value   # → puede dar 0 o 1 (flotante)
 
 # 3. Conecta:
-#    - Resistencia 10kΩ entre DI0 (X11-2) y M0 (X11-1) → pull-down
 #    - Pulsador NA entre Fuente 24V externa (+) y DI0 (X11-2)
 #    - M0 (X11-1) a Fuente 24V externa (-)
 
 # 4. Leer sin pulsar
-cat /sys/class/gpio/gpio437/value   # → 0 (pull-down a GND) ✅
+cat /sys/class/gpio/gpio437/value   # → 0 ✅
 
 # 5. Leer pulsando (mantén el pulsador apretado)
 cat /sys/class/gpio/gpio437/value   # → 1 (+24V) ✅ ✨
@@ -362,7 +355,7 @@ cat /sys/class/gpio/gpio437/value   # → 1 (+24V) ✅ ✨
 1. Abre **http://192.168.200.1:1880/ui/**
 2. Pulsa el pulsador y observa cómo cambia el indicador en el dashboard
 
-> ⚠️ **Si no funciona:** Comprueba que has exportado el GPIO (`echo 437 > /sys/class/gpio/export`), que el pulsador está entre +24V externo y DI (X11-2..6), que el pull-down de 10kΩ está entre DI y M0 (X11-1), y que el GND de la fuente externa también va a M0.
+> ⚠️ **Si no funciona:** Comprueba que has exportado el GPIO (`echo 437 > /sys/class/gpio/export`), que el pulsador está entre +24V externo y DI (X11-2..6), que M0 (X11-1) está a GND de la fuente externa, y que el cableado llega hasta los bornes correctos.
 
 ---
 
@@ -370,7 +363,7 @@ cat /sys/class/gpio/gpio437/value   # → 1 (+24V) ✅ ✨
 
 | Paso | Qué hacemos | Comandos clave |
 |------|------------|----------------|
-| 1 | Cablear | Pull-down 10kΩ DI→M0 (GND). Pulsador NA DI→+24V extern. GND fuente → M0 |
+| 1 | Cablear | Pulsador NA DI→+24V extern. M0 (GND) → GND fuente |
 | 2 | Acceder | PuTTY → 192.168.200.1 → root / 123456 |
 | 3 | Descubrir | `gpiodetect`, `gpioinfo gpiochip3/4` |
 | 4 | Exportar | `echo 437 > /sys/class/gpio/export` (y 438, 439, 441, 345) |

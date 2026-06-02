@@ -82,27 +82,23 @@ Descarrega el manual complet aquí:
 Per llegir les entrades digitals, necessitem una **font d'alimentació externa de 24V DC** independent del shield. Les connexions són:
 
 1. **+24V extern** → Polsador NA → **DI0** (X11-2)
-2. **DI0** (X11-2) → resistència **10kΩ** (pull-down) → **M0** (X11-1, GND)
-3. **GND extern** → **M0** (X11-1, GND)
+2. **GND extern** → **M0** (X11-1, GND)
 
 **Funcionament:**
-- **Polsador NO polsat** → pull-down de 10kΩ a GND → DI0 = **0** (repòs)
+- **Polsador NO polsat** → DI0 oberta → DI0 = **0** (repòs)
 - **Polsador SÍ polsat** → +24V a DI0 → DI0 = **1** (actiu)
-
-> ⚠️ La resistència de **10kΩ** és necessària perquè quan el polsador està obert, la DI no quedi flotant sinó que es mantingui fermament a 0V (GND).
 
 ### 1.3.2 Exemple pràctic amb polsador
 
 **Connexions:**
 - **+24V extern** → Polsador NA → **DI0** (X11-2)
-- **DI0** (X11-2) → **R 10kΩ** (pull-down) → **M0** (X11-1, GND)
 - **GND extern** → **M0** (X11-1, GND)
 
 **Lògica:**
-- **Sense polsar** → pull-down a GND → DI0 = **0** (repòs)
+- **Sense polsar** → DI0 = **0** (repòs)
 - **Polsant** → +24V a DI0 → DI0 = **1** (actiu)
 
-> ⚠️ Per usar més d'una DI: cada polsador entre +24V i la DI, amb el seu pull-down de 10kΩ a M0.
+> ⚠️ Per usar més d'una DI: cada polsador entre +24V i la DI corresponent, i totes les DI amb M0 comú a GND.
 
 ---
 
@@ -231,10 +227,8 @@ cat /sys/class/gpio/gpio437/value   # DI0: 0 o 1
 Prova de prémer el polsador mentre llegeixes:
 
 ```bash
-# Amb el cablejat invertit (pull-down 10kΩ + polsador a +24V):
-
-# Deixa anar el polsador i llegeix:
-cat /sys/class/gpio/gpio437/value   # DI0 → ha de donar 0 (pull-down a GND) ✅
+# Solta el polsador i llegeix:
+cat /sys/class/gpio/gpio437/value   # DI0 → ha de donar 0 ✅
 
 # Mantén premut el polsador i llegeix:
 cat /sys/class/gpio/gpio437/value   # DI0 → ha de donar 1 (+24V) ✅
@@ -346,12 +340,11 @@ echo 345 > /sys/class/gpio/export   # DI4
 cat /sys/class/gpio/gpio437/value   # → pot donar 0 o 1 (flotant)
 
 # 3. Connecta:
-#    - Resistència 10kΩ entre DI0 (X11-2) i M0 (X11-1) → pull-down
 #    - Polsador NA entre Font 24V externa (+) i DI0 (X11-2)
 #    - M0 (X11-1) a Font 24V externa (-)
 
 # 4. Llegir sense prémer
-cat /sys/class/gpio/gpio437/value   # → 0 (pull-down a GND) ✅
+cat /sys/class/gpio/gpio437/value   # → 0 ✅
 
 # 5. Llegir premint (mantén el polsador apretat)
 cat /sys/class/gpio/gpio437/value   # → 1 (+24V) ✅ ✨
@@ -362,7 +355,7 @@ cat /sys/class/gpio/gpio437/value   # → 1 (+24V) ✅ ✨
 1. Obre **http://192.168.200.1:1880/ui/**
 2. Prem el polsador i observa com canvia l'indicador al dashboard
 
-> ⚠️ **Si no funciona:** Comprova que has exportat el GPIO (`echo 437 > /sys/class/gpio/export`), que el polsador està entre DI i L+ (X12-7), que el pull-down de 10kΩ està entre DI i M0 (X11-1), i que el cablejat arriba als bornes correctes.
+> ⚠️ **Si no funciona:** Comprova que has exportat el GPIO (`echo 437 > /sys/class/gpio/export`), que el polsador està entre Font 24V externa (+) i DI (X11-2..6), que M0 (X11-1) està a GND de la font externa, i que el cablejat arriba als bornes correctes.
 
 ---
 
@@ -370,7 +363,7 @@ cat /sys/class/gpio/gpio437/value   # → 1 (+24V) ✅ ✨
 
 | Pas | Què fem | Comandes clau |
 |-----|---------|---------------|
-| 1 | Cablejar | Pull-down 10kΩ DI→M0 (GND). Polsador NA DI→+24V extern. GND font → M0 |
+| 1 | Cablejar | Polsador NA DI→+24V extern. M0 (GND) → GND font |
 | 2 | Accedir | PuTTY → 192.168.200.1 → root / 123456 |
 | 3 | Descobrir | `gpiodetect`, `gpioinfo gpiochip3/4` |
 | 4 | Exportar | `echo 437 > /sys/class/gpio/export` (i 438, 439, 441, 345) |
