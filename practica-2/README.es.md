@@ -231,11 +231,13 @@ cat /sys/class/gpio/gpio437/value   # DI0: 0 o 1
 Prueba a pulsar el pulsador mientras lees:
 
 ```bash
-# Mantén pulsado el pulsador y lee:
-cat /sys/class/gpio/gpio437/value   # DI0 → debe dar 0 (conectado a M0)
+# Con el cableado invertido (pull-down 10kΩ + pulsador a +24V):
 
 # Suelta el pulsador y lee:
-cat /sys/class/gpio/gpio437/value   # DI0 → debe dar 1 (pull-up o floating)
+cat /sys/class/gpio/gpio437/value   # DI0 → debe dar 0 (pull-down a GND) ✅
+
+# Mantén pulsado el pulsador y lee:
+cat /sys/class/gpio/gpio437/value   # DI0 → debe dar 1 (+24V) ✅
 ```
 
 ### 2.3.3 Leer todas las entradas a la vez

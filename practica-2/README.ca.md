@@ -231,11 +231,13 @@ cat /sys/class/gpio/gpio437/value   # DI0: 0 o 1
 Prova de prémer el polsador mentre llegeixes:
 
 ```bash
-# Mantén premut el polsador i llegeix:
-cat /sys/class/gpio/gpio437/value   # DI0 → ha de donar 0 (connectat a M0)
+# Amb el cablejat invertit (pull-down 10kΩ + polsador a +24V):
 
 # Deixa anar el polsador i llegeix:
-cat /sys/class/gpio/gpio437/value   # DI0 → ha de donar 1 (pull-up o floating)
+cat /sys/class/gpio/gpio437/value   # DI0 → ha de donar 0 (pull-down a GND) ✅
+
+# Mantén premut el polsador i llegeix:
+cat /sys/class/gpio/gpio437/value   # DI0 → ha de donar 1 (+24V) ✅
 ```
 
 ### 2.3.3 Llegir totes les entrades alhora
