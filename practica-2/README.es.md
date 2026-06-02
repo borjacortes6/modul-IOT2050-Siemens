@@ -79,32 +79,26 @@ Descarga el manual completo aquí:
 
 Por defecto, las DI del shield leen **1** cuando no hay nada conectado (estado flotante). Para invertir la lógica y que en reposo lean **0**, hay que:
 
-1. Conectar una **resistencia de pull-down de 10kΩ** entre la DI y M0 (GND)
-2. Conectar el **pulsador entre la DI y L+ (+24V)**
+1. Conectar la **DI a positivo (+24V)** a través de un pulsador NA
+2. Conectar un **pull-down de 10kΩ** de la DI a M0 (GND)
 
 ```
-            ┌───────────────────────────────────┐
-            │         IoT2050 + Shield           │
-            │                                   │
- [X12-7] ───┤ L+ (+24V)                         │
-            │                                   │
- [X11-2] ───┤ DI0                               │
-            │            ┌─┴─┐                   │
-            │            │   │  ← Pulsador NA    │
-            │            └─┬─┘                   │
-            │              │                     │
-            │          ┌───┴───┐                 │
-            │          │ 10kΩ  │  ← Pull-down    │
-            │          └───┬───┘                 │
- [X11-1] ───┤ M0 (GND) ───┘                     │
-            └───────────────────────────────────┘
+         ════ CONEXIÓN EXTERNA ════
+
+    +24V ───────────── Pulsador NA ─────┐
+    (X12-7 L+)                           │
+                                         ├── DI0 (X11-2)
+    GND  ────────[ 10kΩ ]───────────────┘
+    (X11-1 M0)    pull-down
+
+         ═══════════════════════════════
 ```
 
 **Funcionamiento:**
-- **Pulsador NO pulsado** → la resistencia de pull-down conecta DI0 a M0 (GND) → **0** (LOW) ✅
-- **Pulsador SÍ pulsado** → DI0 conectada a L+ (+24V) → **1** (HIGH) ✅
+- **Pulsador NO pulsado** → la resistencia de pull-down lleva DI0 a **0V (GND)** → lee **0** ✅
+- **Pulsador SÍ pulsado** → DI0 conectada a **+24V (L+)** → lee **1** ✅
 
-> ⚠️ La resistencia de **10kΩ** es necesaria para que cuando el pulsador está abierto, la DI no quede flotante sino que se mantenga a 0V (GND). Sin el pull-down, el valor sería impredecible.
+> ⚠️ La resistencia de **10kΩ** es necesaria para que cuando el pulsador está abierto, la DI no quede flotante sino que se mantenga firmemente a 0V (GND). Sin el pull-down, el valor sería impredecible.
 
 ### 1.3.2 Ejemplo práctico con pulsador
 
@@ -114,10 +108,11 @@ X12-7 (L+, +24V) ──── Pulsador NA ──── DI0 (X11-2)
 X11-2 (DI0) ──── R 10kΩ ──── X11-1 (M0, GND)
 ```
 
-Cuando **pulsas** el pulsador, DI0 se conecta a +24V → lee **1** ✅
-Cuando **dejas de pulsar**, el pull-down la mantiene a 0V → lee **0** ✅
+**Lógica:**
+- **Sin pulsar** → pull-down a GND → DI0 = **0** (reposo)
+- **Pulsando** → +24V a DI0 → DI0 = **1** (activo)
 
-> ⚠️ Si quieres usar más de una DI, conecta cada pulsador entre L+ y la DI correspondiente, y pon una resistencia de pull-down de 10kΩ entre cada DI y M0.
+> ⚠️ Para usar más de una DI: cada pulsador entre L+ y la DI, con su pull-down de 10kΩ a M0.
 
 ---
 

@@ -79,32 +79,26 @@ Descarrega el manual complet aquí:
 
 Per defecte, les DI del shield llegeixen **1** quan no hi ha res connectat (estat flotant). Per invertir la lògica i que en repòs llegeixin **0**, cal:
 
-1. Connectar una **resistència de pull-down de 10kΩ** entre la DI i M0 (GND)
-2. Connectar el **polsador entre la DI i L+ (+24V)**
+1. Connectar la **DI a positiu (+24V)** a través d'un polsador NA
+2. Connectar un **pull-down de 10kΩ** de la DI a M0 (GND)
 
 ```
-            ┌───────────────────────────────────┐
-            │         IoT2050 + Shield           │
-            │                                   │
- [X12-7] ───┤ L+ (+24V)                         │
-            │                                   │
- [X11-2] ───┤ DI0                               │
-            │            ┌─┴─┐                   │
-            │            │   │  ← Polsador NA    │
-            │            └─┬─┘                   │
-            │              │                     │
-            │          ┌───┴───┐                 │
-            │          │ 10kΩ  │  ← Pull-down    │
-            │          └───┬───┘                 │
- [X11-1] ───┤ M0 (GND) ───┘                     │
-            └───────────────────────────────────┘
+         ════ CONNEXIÓ EXTERNA ════
+
+    +24V ───────────── Polsador NA ──────┐
+    (X12-7 L+)                            │
+                                          ├── DI0 (X11-2)
+    GND  ────────[ 10kΩ ]────────────────┘
+    (X11-1 M0)    pull-down
+
+         ════════════════════════════════
 ```
 
 **Funcionament:**
-- **Polsador NO polsat** → la resistència de pull-down connecta DI0 a M0 (GND) → **0** (LOW) ✅
-- **Polsador SÍ polsat** → DI0 connectada a L+ (+24V) → **1** (HIGH) ✅
+- **Polsador NO polsat** → la resistència de pull-down porta DI0 a **0V (GND)** → llegeix **0** ✅
+- **Polsador SÍ polsat** → DI0 connectada a **+24V (L+)** → llegeix **1** ✅
 
-> ⚠️ La resistència de **10kΩ** és necessària perquè quan el polsador està obert, la DI no quedi flotant sinó que es mantingui a 0V (GND). Sense el pull-down, el valor seria impredictible.
+> ⚠️ La resistència de **10kΩ** és necessària perquè quan el polsador està obert, la DI no quedi flotant sinó que es mantingui fermament a 0V (GND). Sense el pull-down, el valor seria impredictible.
 
 ### 1.3.2 Exemple pràctic amb polsador
 
@@ -114,10 +108,11 @@ X12-7 (L+, +24V) ──── Polsador NA ──── DI0 (X11-2)
 X11-2 (DI0) ──── R 10kΩ ──── X11-1 (M0, GND)
 ```
 
-Quan **premis** el polsador, DI0 es connecta a +24V → llegeix **1** ✅
-Quan **deixis anar** el polsador, el pull-down la manté a 0V → llegeix **0** ✅
+**Lògica:**
+- **Sense polsar** → pull-down a GND → DI0 = **0** (repòs)
+- **Polsant** → +24V a DI0 → DI0 = **1** (actiu)
 
-> ⚠️ Si vols utilitzar més d'una DI, connecta cada polsador entre L+ i la DI corresponent, i posa una resistència de pull-down de 10kΩ entre cada DI i M0.
+> ⚠️ Per usar més d'una DI: cada polsador entre L+ i la DI, amb el seu pull-down de 10kΩ a M0.
 
 ---
 
