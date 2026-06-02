@@ -43,7 +43,7 @@ Descarrega el manual complet aquí:
 
 **Secció 1.2.1 del manual (Pàg. 7):**
 
-![Estructura del mòdul I/O - Pàg 7](images/structure-page7.png)
+![Estructura del mòdul I/O - Pàg 7](../practica-1/images/structure-page7.png)
 
 *Pàg 7 del manual: estructura del mòdul amb descripció de cada connector*
 
@@ -404,7 +404,6 @@ practica-2/
 ├── README.es.md                    ← Guía en castellano
 ├── nodered-flow/
 │   └── flow-di.json                ← Flow de Node-RED (lectura DI)
-└── images/                         ← (compartides amb pràctica 1)
 ```
 
 > Les imatges del manual (estructura, pinout, cablejat) són les mateixes que a la Pràctica 1 i estan a `practica-1/images/`.
