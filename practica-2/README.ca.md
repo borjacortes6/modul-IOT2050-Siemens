@@ -77,25 +77,41 @@ Descarrega el manual complet aquí:
 
 ### 1.3.1 Connexió de les entrades digitals DI
 
-Per defecte, les DI del shield llegeixen **1** quan no hi ha res connectat (estat flotant). Per invertir la lògica i que en repòs llegeixin **0**, cal:
+Per llegir les entrades digitals, necessitem una **font d'alimentació externa de 24V DC** independent del shield. Les connexions són:
 
-1. Connectar la **DI a positiu (+24V)** a través d'un polsador NA
-2. Connectar un **pull-down de 10kΩ** de la DI a M0 (GND)
+1. **+24V extern** → Polsador NA → **DI0** (X11-2)
+2. **DI0** (X11-2) → resistència **10kΩ** (pull-down) → **M0** (X11-1, GND)
+3. **GND extern** → **M0** (X11-1, GND)
 
 ```
          ════ CONNEXIÓ EXTERNA ════
 
-    +24V ───────────── Polsador NA ──────┐
-    (X12-7 L+)                            │
-                                          ├── DI0 (X11-2)
-    GND  ────────[ 10kΩ ]────────────────┘
-    (X11-1 M0)    pull-down
+    ┌─ Font 24V DC ──┐
+    │  +24V      GND  │
+    └──┬───────────┬──┘
+       │           │
+       │  ┌────────┴────────┐
+       │  │                 │
+       │  │        ┌───┐    │
+       └──┤ Pols.  │10k│    │
+          │ NA     │Ω  │    │
+          └───┬────┘   │    │
+              │        │    │
+         DI0 ─┘        │    │
+        (X11-2)        │    │
+                       │    │
+         M0 ───────────┘    │
+        (X11-1)             │
+                   pull-down│
+                            │
+         M0 ────────────────┘
+        (X11-1)
 
-         ════════════════════════════════
+         ══════════════════════
 ```
 
 **Funcionament:**
-- **Polsador NO polsat** → pull-down a GND → DI0 = **0** (repòs)
+- **Polsador NO polsat** → pull-down de 10kΩ a GND → DI0 = **0** (repòs)
 - **Polsador SÍ polsat** → +24V a DI0 → DI0 = **1** (actiu)
 
 > ⚠️ La resistència de **10kΩ** és necessària perquè quan el polsador està obert, la DI no quedi flotant sinó que es mantingui fermament a 0V (GND).
@@ -103,16 +119,18 @@ Per defecte, les DI del shield llegeixen **1** quan no hi ha res connectat (esta
 ### 1.3.2 Exemple pràctic amb polsador
 
 ```
-X12-7 (L+, +24V) ──── Polsador NA ──── DI0 (X11-2)
+Font 24V (+) ──── Polsador NA ──── DI0 (X11-2)
 
-X11-2 (DI0) ──── R 10kΩ ──── X11-1 (M0, GND)
+DI0 (X11-2) ──── R 10kΩ ──── M0 (X11-1, GND)
+
+M0 (X11-1) ──── Font 24V (-) [GND]
 ```
 
 **Lògica:**
 - **Sense polsar** → pull-down a GND → DI0 = **0** (repòs)
 - **Polsant** → +24V a DI0 → DI0 = **1** (actiu)
 
-> ⚠️ Per usar més d'una DI: cada polsador entre L+ i la DI, amb el seu pull-down de 10kΩ a M0.
+> ⚠️ Per usar més d'una DI: cada polsador entre +24V i la DI, amb el seu pull-down de 10kΩ a M0.
 
 ---
 
@@ -356,7 +374,8 @@ cat /sys/class/gpio/gpio437/value   # → pot donar 0 o 1 (flotant)
 
 # 3. Connecta:
 #    - Resistència 10kΩ entre DI0 (X11-2) i M0 (X11-1) → pull-down
-#    - Polsador NA entre X12-7 (L+, +24V) i DI0 (X11-2)
+#    - Polsador NA entre Font 24V externa (+) i DI0 (X11-2)
+#    - M0 (X11-1) a Font 24V externa (-)
 
 # 4. Llegir sense prémer
 cat /sys/class/gpio/gpio437/value   # → 0 (pull-down a GND) ✅
@@ -378,7 +397,7 @@ cat /sys/class/gpio/gpio437/value   # → 1 (+24V) ✅ ✨
 
 | Pas | Què fem | Comandes clau |
 |-----|---------|---------------|
-| 1 | Cablejar | Pull-down 10kΩ DI→M0 (GND). Polsador NA DI→L+ (+24V) |
+| 1 | Cablejar | Pull-down 10kΩ DI→M0 (GND). Polsador NA DI→+24V extern. GND font → M0 |
 | 2 | Accedir | PuTTY → 192.168.200.1 → root / 123456 |
 | 3 | Descobrir | `gpiodetect`, `gpioinfo gpiochip3/4` |
 | 4 | Exportar | `echo 437 > /sys/class/gpio/export` (i 438, 439, 441, 345) |

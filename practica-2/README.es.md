@@ -77,25 +77,41 @@ Descarga el manual completo aquí:
 
 ### 1.3.1 Conexión de las entradas digitales DI
 
-Por defecto, las DI del shield leen **1** cuando no hay nada conectado (estado flotante). Para invertir la lógica y que en reposo lean **0**, hay que:
+Para leer las entradas digitales, necesitamos una **fuente de alimentación externa de 24V DC** independiente del shield. Las conexiones son:
 
-1. Conectar la **DI a positivo (+24V)** a través de un pulsador NA
-2. Conectar un **pull-down de 10kΩ** de la DI a M0 (GND)
+1. **+24V externo** → Pulsador NA → **DI0** (X11-2)
+2. **DI0** (X11-2) → resistencia **10kΩ** (pull-down) → **M0** (X11-1, GND)
+3. **GND externo** → **M0** (X11-1, GND)
 
 ```
          ════ CONEXIÓN EXTERNA ════
 
-    +24V ───────────── Pulsador NA ─────┐
-    (X12-7 L+)                           │
-                                         ├── DI0 (X11-2)
-    GND  ────────[ 10kΩ ]───────────────┘
-    (X11-1 M0)    pull-down
+    ┌─ Fuente 24V DC ─┐
+    │  +24V       GND  │
+    └──┬────────────┬──┘
+       │            │
+       │   ┌────────┴────────┐
+       │   │                 │
+       │   │        ┌───┐    │
+       └───┤ Puls.  │10k│    │
+           │ NA     │Ω  │    │
+           └───┬────┘   │    │
+               │        │    │
+          DI0 ─┘        │    │
+         (X11-2)        │    │
+                        │    │
+          M0 ───────────┘    │
+         (X11-1)             │
+                    pull-down│
+                             │
+          M0 ────────────────┘
+         (X11-1)
 
-         ═══════════════════════════════
+         ═══════════════════════
 ```
 
 **Funcionamiento:**
-- **Pulsador NO pulsado** → pull-down a GND → DI0 = **0** (reposo)
+- **Pulsador NO pulsado** → pull-down de 10kΩ a GND → DI0 = **0** (reposo)
 - **Pulsador SÍ pulsado** → +24V a DI0 → DI0 = **1** (activo)
 
 > ⚠️ La resistencia de **10kΩ** es necesaria para que cuando el pulsador está abierto, la DI no quede flotante sino que se mantenga firmemente a 0V (GND).
@@ -103,16 +119,18 @@ Por defecto, las DI del shield leen **1** cuando no hay nada conectado (estado f
 ### 1.3.2 Ejemplo práctico con pulsador
 
 ```
-X12-7 (L+, +24V) ──── Pulsador NA ──── DI0 (X11-2)
+Fuente 24V (+) ──── Pulsador NA ──── DI0 (X11-2)
 
-X11-2 (DI0) ──── R 10kΩ ──── X11-1 (M0, GND)
+DI0 (X11-2) ──── R 10kΩ ──── M0 (X11-1, GND)
+
+M0 (X11-1) ──── Fuente 24V (-) [GND]
 ```
 
 **Lógica:**
 - **Sin pulsar** → pull-down a GND → DI0 = **0** (reposo)
 - **Pulsando** → +24V a DI0 → DI0 = **1** (activo)
 
-> ⚠️ Para usar más de una DI: cada pulsador entre L+ y la DI, con su pull-down de 10kΩ a M0.
+> ⚠️ Para usar más de una DI: cada pulsador entre +24V y la DI, con su pull-down de 10kΩ a M0.
 
 ---
 
@@ -356,7 +374,8 @@ cat /sys/class/gpio/gpio437/value   # → puede dar 0 o 1 (flotante)
 
 # 3. Conecta:
 #    - Resistencia 10kΩ entre DI0 (X11-2) y M0 (X11-1) → pull-down
-#    - Pulsador NA entre X12-7 (L+, +24V) y DI0 (X11-2)
+#    - Pulsador NA entre Fuente 24V externa (+) y DI0 (X11-2)
+#    - M0 (X11-1) a Fuente 24V externa (-)
 
 # 4. Leer sin pulsar
 cat /sys/class/gpio/gpio437/value   # → 0 (pull-down a GND) ✅
@@ -370,7 +389,7 @@ cat /sys/class/gpio/gpio437/value   # → 1 (+24V) ✅ ✨
 1. Abre **http://192.168.200.1:1880/ui/**
 2. Pulsa el pulsador y observa cómo cambia el indicador en el dashboard
 
-> ⚠️ **Si no funciona:** Comprueba que has exportado el GPIO (`echo 437 > /sys/class/gpio/export`), que el pulsador está entre DI y L+ (X12-7), que el pull-down de 10kΩ está entre DI y M0 (X11-1), y que el cableado llega hasta los bornes correctos.
+> ⚠️ **Si no funciona:** Comprueba que has exportado el GPIO (`echo 437 > /sys/class/gpio/export`), que el pulsador está entre +24V externo y DI (X11-2..6), que el pull-down de 10kΩ está entre DI y M0 (X11-1), y que el GND de la fuente externa también va a M0.
 
 ---
 
@@ -378,7 +397,7 @@ cat /sys/class/gpio/gpio437/value   # → 1 (+24V) ✅ ✨
 
 | Paso | Qué hacemos | Comandos clave |
 |------|------------|----------------|
-| 1 | Cablear | Pull-down 10kΩ DI→M0 (GND). Pulsador NA DI→L+ (+24V) |
+| 1 | Cablear | Pull-down 10kΩ DI→M0 (GND). Pulsador NA DI→+24V extern. GND fuente → M0 |
 | 2 | Acceder | PuTTY → 192.168.200.1 → root / 123456 |
 | 3 | Descubrir | `gpiodetect`, `gpioinfo gpiochip3/4` |
 | 4 | Exportar | `echo 437 > /sys/class/gpio/export` (y 438, 439, 441, 345) |
