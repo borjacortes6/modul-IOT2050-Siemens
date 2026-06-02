@@ -66,12 +66,6 @@ Descarrega el manual complet aquí:
 
 ## 🔌 1.2 Pinout del connector X1 (bornes)
 
-**Secció 4.2.3 del manual — Hardware Interface (Pàg. 30):**
-
-![Hardware Interface Pinout](images/hardware-interface-pinout.png)
-
-*Pàg 30: taula d'assignació de pins del connector X1*
-
 ### Taula resum de connexions:
 
 | Connector | Borne | Senyal | Funció |
