@@ -238,29 +238,6 @@ Exemple per DQ1: gpiochip4 (base 312) + line 43 (IO7) = gpio355
 Exemple per DQ0: gpiochip4 (base 312) + line 48 (IO8) = gpio360
 ```
 
-### Pas 4: Confirmació experimental
-
-Un cop els GPIOs estiguin exportats i configurats (secció 2.3), proveu:
-
-```bash
-# DQ1 (X12-10)
-echo 1 > /sys/class/gpio/gpio355/value   # DQ1 ON 🟢
-echo 0 > /sys/class/gpio/gpio355/value   # DQ1 OFF ⚫
-
-# DQ0 (X12-9)
-echo 1 > /sys/class/gpio/gpio360/value   # DQ0 ON 🟢
-echo 0 > /sys/class/gpio/gpio360/value   # DQ0 OFF ⚫
-```
-
-Verificar l'estat:
-```bash
-cat /sys/class/gpio/gpio355/value   # DQ1: 0 o 1
-cat /sys/class/gpio/gpio360/value   # DQ0: 0 o 1
-```
-
-> 📝 Els números de GPIO (355 = DQ1, 360 = DQ0) depenen de com el kernel de Linux assigna els controladors en arrencar. En un altre IoT2050 podrien ser diferents, per això és important saber com descobrir-ho amb `gpioinfo`.
-
----
 
 ### ⚠️ 2.2.1 Arquitectura del shield: PCAL9535 (el pas ocult!)
 
@@ -327,36 +304,33 @@ echo out > /sys/class/gpio/gpio355/direction   # DQ1 com a sortida
 echo out > /sys/class/gpio/gpio360/direction   # DQ0 com a sortida
 ```
 
-### 2.3.4 Activar i desactivar les sortides
+### 2.3.4 Sobre l'arrencada automàtica
 
-```bash
-# DQ1 ON
-echo 1 > /sys/class/gpio/gpio355/value
-# El borne 10 es posa a +24V → DQ1 activa
-
-# DQ1 OFF
-echo 0 > /sys/class/gpio/gpio355/value
-
-# DQ0 ON
-echo 1 > /sys/class/gpio/gpio360/value
-# El borne 9 es posa a +24V → DQ0 activa
-
-# DQ0 OFF
-echo 0 > /sys/class/gpio/gpio360/value
-```
-
-### 2.3.5 Llegir l'estat actual
-
-```bash
-cat /sys/class/gpio/gpio355/value   # DQ1: Retorna 0 (OFF) o 1 (ON)
-cat /sys/class/gpio/gpio360/value   # DQ0
-```
-
-### 2.3.6 Sobre l'arrencada automàtica
-
-> 📌 **Per a la pràctica:** feu els passos 2.3.1 a 2.3.5 cada cop que comenceu. Així aprenem tot el procés!
+> 📌 **Per a la pràctica:** feu els passos 2.3.1 a 2.3.3 i després la confirmació (2.3.5) cada cop que comenceu. Així aprenem tot el procés!
 >
 > 🔧 **Si voleu desar la configuració permanentment** per evitar repetir-ho, vegeu l'**Apèndix A** al final del document.
+
+### 2.3.5 Confirmació experimental
+
+Un cop els GPIOs estiguin exportats i configurats, proveu les sortides:
+
+```bash
+# DQ1 (X12-10)
+echo 1 > /sys/class/gpio/gpio355/value   # DQ1 ON 🟢
+echo 0 > /sys/class/gpio/gpio355/value   # DQ1 OFF ⚫
+
+# DQ0 (X12-9)
+echo 1 > /sys/class/gpio/gpio360/value   # DQ0 ON 🟢
+echo 0 > /sys/class/gpio/gpio360/value   # DQ0 OFF ⚫
+```
+
+Verificar l'estat:
+```bash
+cat /sys/class/gpio/gpio355/value   # DQ1: 0 o 1
+cat /sys/class/gpio/gpio360/value   # DQ0: 0 o 1
+```
+
+> 📝 Els números de GPIO (355 = DQ1, 360 = DQ0) depenen de com el kernel de Linux assigna els controladors en arrencar. En un altre IoT2050 podrien ser diferents, per això és important saber com descobrir-ho amb `gpioinfo`.
 
 ---
 
