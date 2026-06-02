@@ -262,17 +262,16 @@ Per sortir del bucle prem `Ctrl + C`.
 
 ### 2.3.6 Confirmació experimental
 
-Un cop els GPIOs estiguin exportats, proveu les entrades amb el cablejat invertit (pull-down + polsador a L+):
+Un cop els GPIOs estiguin exportats, proveu les entrades:
 
 ```bash
-# Amb el polsador instal·lat a DI0 (X11-2), pull-down 10kΩ a M0,
-# i polsador entre DI0 i L+ (X12-7):
+# Amb el polsador entre +24V extern i DI0 (X11-2), i M0 (X11-1) a GND:
 
 # Sense prémer:
-cat /sys/class/gpio/gpio437/value   # → 0 (LOW) ✅  ← ara 0 en repòs!
+cat /sys/class/gpio/gpio437/value   # → 0 ✅
 
 # Prement:
-cat /sys/class/gpio/gpio437/value   # → 1 (HIGH) ✅ ← ara 1 al polsar!
+cat /sys/class/gpio/gpio437/value   # → 1 ✅
 ```
 
 Podeu repetir la prova connectant el polsador a altres DI (DI1-DI4).

@@ -262,17 +262,16 @@ Para salir del bucle pulsa `Ctrl + C`.
 
 ### 2.3.6 Confirmación experimental
 
-Una vez los GPIOs estén exportados, probad las entradas con el cableado invertido (pull-down + pulsador a L+):
+Una vez los GPIOs estén exportados, probad las entradas:
 
 ```bash
-# Con el pulsador instalado en DI0 (X11-2), pull-down 10kΩ a M0,
-# y pulsador entre DI0 y L+ (X12-7):
+# Con el pulsador entre +24V externo y DI0 (X11-2), y M0 (X11-1) a GND:
 
 # Sin pulsar:
-cat /sys/class/gpio/gpio437/value   # → 0 (LOW) ✅  ← ahora 0 en reposo!
+cat /sys/class/gpio/gpio437/value   # → 0 ✅
 
 # Pulsando:
-cat /sys/class/gpio/gpio437/value   # → 1 (HIGH) ✅ ← ahora 1 al pulsar!
+cat /sys/class/gpio/gpio437/value   # → 1 ✅
 ```
 
 Podéis repetir la prueba conectando el pulsador a otras DI (DI1-DI4).
