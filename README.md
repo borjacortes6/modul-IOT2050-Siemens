@@ -2,11 +2,13 @@
 
 Pràctiques amb el **SIMATIC IOT2050 Basic PG2** i el **Shield IO 6ES7647-0KA01-0AA2**.
 
-📚 **Disponible en:**
-- [Català](practica-1/README.ca.md)
-- [Castellano](practica-1/README.es.md)
+## 📚 Pràctiques disponibles
 
-## 📁 Contingut
+| # | Títol | Català | Castellano |
+|---|-------|--------|------------|
+| 1 | Control de sortides digitals DQ | [`practica-1/README.ca.md`](practica-1/README.ca.md) | [`practica-1/README.es.md`](practica-1/README.es.md) |
+
+## 📁 Estructura del repositori
 
 ```
 modul-IOT2050-Siemens/
@@ -29,4 +31,8 @@ modul-IOT2050-Siemens/
 ## 🔗 Enllaços útils
 
 - **Manual oficial Siemens:** https://support.industry.siemens.com/cs/document/109745681/
-- **Repositori de documentació:** https://github.com/borjacortes6/iot2050-io-shield
+- **Repositori de documentació completa:** https://github.com/borjacortes6/iot2050-io-shield
+
+## 📄 Llicència
+
+MIT — Ús educatiu lliure
