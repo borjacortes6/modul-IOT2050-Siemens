@@ -75,11 +75,7 @@ Descarga el manual completo aquí:
 
 ## ⚡ 1.3 Cableado de una entrada digital
 
-### 1.3.1 Conexión de las entradas digitales DI (Pág. 21 del manual)
-
-![Entradas digitales](../practica-1/images/wiring-digital-inputs.png)
-
-*Pág 21: conexión de sensores / interruptores a las entradas DI0-DI4 (conector X11)*
+### 1.3.1 Conexión de las entradas digitales DI
 
 Por defecto, las DI del shield leen **1** cuando no hay nada conectado (estado flotante). Para invertir la lógica y que en reposo lean **0**, hay que:
 

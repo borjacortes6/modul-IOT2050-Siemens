@@ -75,11 +75,7 @@ Descarrega el manual complet aquí:
 
 ## ⚡ 1.3 Cablejat d'una entrada digital
 
-### 1.3.1 Connexió de les entrades digitals DI (Pàg. 21 del manual)
-
-![Entrades digitals](../practica-1/images/wiring-digital-inputs.png)
-
-*Pàg 21: connexió dels sensors / interruptors a les entrades DI0-DI4 (connector X11)*
+### 1.3.1 Connexió de les entrades digitals DI
 
 Per defecte, les DI del shield llegeixen **1** quan no hi ha res connectat (estat flotant). Per invertir la lògica i que en repòs llegeixin **0**, cal:
 
