@@ -77,38 +77,13 @@ Descarga el manual completo aquí:
 
 ### 1.3.1 Conexión de las entradas digitales DI
 
+![Cableado entradas digitales](images/wiring-di-pullup.png)
+
 Para leer las entradas digitales, necesitamos una **fuente de alimentación externa de 24V DC** independiente del shield. Las conexiones son:
 
 1. **+24V externo** → Pulsador NA → **DI0** (X11-2)
 2. **DI0** (X11-2) → resistencia **10kΩ** (pull-down) → **M0** (X11-1, GND)
 3. **GND externo** → **M0** (X11-1, GND)
-
-```
-         ════ CONEXIÓN EXTERNA ════
-
-    ┌─ Fuente 24V DC ─┐
-    │  +24V       GND  │
-    └──┬────────────┬──┘
-       │            │
-       │   ┌────────┴────────┐
-       │   │                 │
-       │   │        ┌───┐    │
-       └───┤ Puls.  │10k│    │
-           │ NA     │Ω  │    │
-           └───┬────┘   │    │
-               │        │    │
-          DI0 ─┘        │    │
-         (X11-2)        │    │
-                        │    │
-          M0 ───────────┘    │
-         (X11-1)             │
-                    pull-down│
-                             │
-          M0 ────────────────┘
-         (X11-1)
-
-         ═══════════════════════
-```
 
 **Funcionamiento:**
 - **Pulsador NO pulsado** → pull-down de 10kΩ a GND → DI0 = **0** (reposo)
@@ -118,13 +93,10 @@ Para leer las entradas digitales, necesitamos una **fuente de alimentación exte
 
 ### 1.3.2 Ejemplo práctico con pulsador
 
-```
-Fuente 24V (+) ──── Pulsador NA ──── DI0 (X11-2)
-
-DI0 (X11-2) ──── R 10kΩ ──── M0 (X11-1, GND)
-
-M0 (X11-1) ──── Fuente 24V (-) [GND]
-```
+**Conexiones:**
+- **+24V externo** → Pulsador NA → **DI0** (X11-2)
+- **DI0** (X11-2) → **R 10kΩ** (pull-down) → **M0** (X11-1, GND)
+- **GND externo** → **M0** (X11-1, GND)
 
 **Lógica:**
 - **Sin pulsar** → pull-down a GND → DI0 = **0** (reposo)
@@ -423,6 +395,8 @@ practica-2/
 ├── README.es.md                    ← Guía en castellano
 ├── nodered-flow/
 │   └── flow-di.json                ← Flow de Node-RED (lectura DI)
+└── images/
+    └── wiring-di-pullup.png        ← Esquema de cableado DI
 ```
 
 > Las imágenes del manual (estructura, pinout, cableado) son las mismas que en la Práctica 1 y están en `practica-1/images/`.

@@ -77,38 +77,13 @@ Descarrega el manual complet aquí:
 
 ### 1.3.1 Connexió de les entrades digitals DI
 
+![Cablejat entrades digitals](images/wiring-di-pullup.png)
+
 Per llegir les entrades digitals, necessitem una **font d'alimentació externa de 24V DC** independent del shield. Les connexions són:
 
 1. **+24V extern** → Polsador NA → **DI0** (X11-2)
 2. **DI0** (X11-2) → resistència **10kΩ** (pull-down) → **M0** (X11-1, GND)
 3. **GND extern** → **M0** (X11-1, GND)
-
-```
-         ════ CONNEXIÓ EXTERNA ════
-
-    ┌─ Font 24V DC ──┐
-    │  +24V      GND  │
-    └──┬───────────┬──┘
-       │           │
-       │  ┌────────┴────────┐
-       │  │                 │
-       │  │        ┌───┐    │
-       └──┤ Pols.  │10k│    │
-          │ NA     │Ω  │    │
-          └───┬────┘   │    │
-              │        │    │
-         DI0 ─┘        │    │
-        (X11-2)        │    │
-                       │    │
-         M0 ───────────┘    │
-        (X11-1)             │
-                   pull-down│
-                            │
-         M0 ────────────────┘
-        (X11-1)
-
-         ══════════════════════
-```
 
 **Funcionament:**
 - **Polsador NO polsat** → pull-down de 10kΩ a GND → DI0 = **0** (repòs)
@@ -118,13 +93,10 @@ Per llegir les entrades digitals, necessitem una **font d'alimentació externa d
 
 ### 1.3.2 Exemple pràctic amb polsador
 
-```
-Font 24V (+) ──── Polsador NA ──── DI0 (X11-2)
-
-DI0 (X11-2) ──── R 10kΩ ──── M0 (X11-1, GND)
-
-M0 (X11-1) ──── Font 24V (-) [GND]
-```
+**Connexions:**
+- **+24V extern** → Polsador NA → **DI0** (X11-2)
+- **DI0** (X11-2) → **R 10kΩ** (pull-down) → **M0** (X11-1, GND)
+- **GND extern** → **M0** (X11-1, GND)
 
 **Lògica:**
 - **Sense polsar** → pull-down a GND → DI0 = **0** (repòs)
@@ -423,6 +395,8 @@ practica-2/
 ├── README.es.md                    ← Guía en castellano
 ├── nodered-flow/
 │   └── flow-di.json                ← Flow de Node-RED (lectura DI)
+└── images/
+    └── wiring-di-pullup.png        ← Esquema de cablejat DI
 ```
 
 > Les imatges del manual (estructura, pinout, cablejat) són les mateixes que a la Pràctica 1 i estan a `practica-1/images/`.

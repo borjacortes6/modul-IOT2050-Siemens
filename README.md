@@ -30,8 +30,10 @@ modul-IOT2050-Siemens/
 └── practica-2/
     ├── README.ca.md          ← Guia en català
     ├── README.es.md          ← Guía en castellano
-    └── nodered-flow/
-        └── flow-di.json      ← Flow Node-RED (lectura DI)
+    ├── nodered-flow/
+    │   └── flow-di.json      ← Flow Node-RED (lectura DI)
+    └── images/
+        └── wiring-di-pullup.png  ← Esquema de cablejat DI
 ```
 
 ## 🔗 Enllaços útils
