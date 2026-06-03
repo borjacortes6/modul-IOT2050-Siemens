@@ -198,6 +198,29 @@ Las salidas DQ0 y DQ1 están conectadas a los GPIOs del procesador del IoT2050. 
 gpiodetect
 ```
 
+Salida:
+```
+gpiochip0 [1-0020] (16 lines)
+gpiochip1 [1-0021] (16 lines)
+...
+```
+
+Esto nos dice cuántos chips hay y sus líneas, pero **no los números globales**. Para saber el rango exacto de GPIOs de cada chip:
+
+```bash
+cat /sys/kernel/debug/gpio
+```
+
+Salida relevante:
+```
+gpiochip1: GPIOs 480-495
+gpiochip3: GPIOs 408-463
+gpiochip4: GPIOs 312-407
+...
+```
+
+Aquí vemos la **base** (primer número) y el **tope** (último número) de cada chip.
+
 En nuestro IoT2050 hay **6 gpiochips**. Los que nos interesan son los que tienen las señales **IO0-IO13**:
 
 | Chip | GPIOs | Dispositivo | Función |
