@@ -249,6 +249,18 @@ El shield 6ES7647-0KA01-0AA2 utilitza **tres PCAL9535** (GPIO expanders per I2C)
 | 0x25 | gpiochip2 (GPIOs 464-479) | Pull-up/down resistors |
 | 0x20 | gpiochip0 (GPIOs 496-511) | Enables i pull de les entrades analògiques |
 
+> **Com sabem que gpiochip1 té els GPIOs 480-495?**
+>
+> `gpiodetect` ens diu quantes línies té cada chip: `gpiochip1 [1-0021] (16 lines)`.
+> I `/sys/kernel/debug/gpio` ens dóna la **base**: `gpiochip1: GPIOs 480-495`.
+>
+> Amb això calculem: **GPIO = base + número_de_línia**
+>
+> | GPIO | Chip | Base | Línia | Càlcul |
+> |------|------|------|-------|--------|
+> | **gpio487** | gpiochip1 | 480 | line 7 (IO7) | 480 + 7 = **487** |
+> | **gpio488** | gpiochip1 | 480 | line 8 (IO8) | 480 + 8 = **488** |
+
 **Per què les DQ no funcionen de primeres?**
 
 Perquè **gpiochip1** inicialitza totes les direccions a **input (lo)**. Per poder escriure a DQ0/DQ1 cal posar el pin de direcció corresponent a **output (hi)**:
